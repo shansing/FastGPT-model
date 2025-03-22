@@ -13,13 +13,14 @@ import uvicorn
 import datetime
 from fastapi import FastAPI, Security, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from FlagEmbedding import FlagReranker
+from FlagEmbedding import LayerWiseFlagLLMReranker
 from pydantic import Field, BaseModel, validator
 from typing import Optional, List
 
 app = FastAPI()
 security = HTTPBearer()
 env_bearer_token = 'ACCESS_TOKEN'
+env_cutoff_layers = None
 
 class QADocs(BaseModel):
     query: Optional[str]
@@ -37,11 +38,11 @@ RERANK_MODEL_PATH = os.path.join(os.path.dirname(__file__), "bge-reranker-v2-min
 
 class ReRanker(metaclass=Singleton):
     def __init__(self, model_path):
-        self.reranker = FlagReranker(model_path, use_fp16=False)
+        self.reranker = LayerWiseFlagLLMReranker(model_path, use_fp16=True)
 
     def compute_score(self, pairs: List[List[str]]):
         if len(pairs) > 0:
-            result = self.reranker.compute_score(pairs, normalize=True)
+            result = self.reranker.compute_score(pairs, normalize=True, cutoff_layers=env_cutoff_layers)
             if isinstance(result, float):
                 result = [result]
             return result
@@ -82,6 +83,9 @@ if __name__ == "__main__":
     token = os.getenv("ACCESS_TOKEN")
     if token is not None:
         env_bearer_token = token
+    cutoff_layers = os.getenv("CUTOFF_LAYERS")
+    if cutoff_layers is not None:
+        env_cutoff_layers = int(cutoff_layers)
     try:
         uvicorn.run(app, host='0.0.0.0', port=6006)
     except Exception as e:

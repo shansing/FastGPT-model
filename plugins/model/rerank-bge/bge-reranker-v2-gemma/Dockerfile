@@ -1,3 +1,5 @@
+# BROKEN, DON'T USE IT FOR NOW
+
 FROM pytorch/pytorch:2.1.2-cuda12.1-cudnn8-runtime
 
 # please download the model from https://huggingface.co/BAAI/bge-reranker-v2-gemma and put it in the same directory as Dockerfile

@@ -13,7 +13,7 @@ import uvicorn
 import datetime
 from fastapi import FastAPI, Security, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from FlagEmbedding import FlagReranker
+from FlagEmbedding import FlagLLMReranker
 from pydantic import Field, BaseModel, validator
 from typing import Optional, List
 
@@ -37,7 +37,7 @@ RERANK_MODEL_PATH = os.path.join(os.path.dirname(__file__), "bge-reranker-v2-gem
 
 class ReRanker(metaclass=Singleton):
     def __init__(self, model_path):
-        self.reranker = FlagReranker(model_path, use_fp16=False)
+        self.reranker = FlagLLMReranker(model_path, use_fp16=True)
 
     def compute_score(self, pairs: List[List[str]]):
         if len(pairs) > 0:
