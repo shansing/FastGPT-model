@@ -27,8 +27,9 @@ model = AutoModel(
     model=model_dir,
     vad_model="fsmn-vad",
     vad_kwargs={"max_single_segment_time": 30000},
-    trust_remote_code=True,
+    trust_remote_code=False,
     device="cuda:0",
+    disable_update=True,
 )
 
 
