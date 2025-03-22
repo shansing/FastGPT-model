@@ -2,4 +2,6 @@ torch>=1.13
 torchaudio
 funasr>=1.1.1
 fastapi
-modelscope
+#modelscope
+python-multipart
+uvicorn==0.17.6
