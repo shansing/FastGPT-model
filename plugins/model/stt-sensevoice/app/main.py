@@ -58,8 +58,9 @@ async def upload_url(data: UrlInput):
 async def upload_file(file: UploadFile = File(...)):
     try:
         #for file in files:
-            if not file.content_type.startswith("audio/"):
-                raise HTTPException(status_code=400, detail="Invalid file type")
+            # comment for Dify
+            # if not file.content_type or not file.content_type.startswith("audio/"):
+            #     raise HTTPException(status_code=400, detail="Invalid file type")
 
             # 读取文件为 bytes
             #audio_bytes = await file.read()
